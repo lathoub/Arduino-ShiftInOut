@@ -1,0 +1,27 @@
+#######################################
+# Syntax Coloring Map for AppleMIDI
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+sipoInterface KEYWORD1
+posiInterface KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+setHandleConnected	 KEYWORD2
+
+#######################################
+# Instances (KEYWORD3)
+#######################################
+AppleMIDI	KEYWORD3
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+APPLEMIDI_CREATE_INSTANCE	LITERAL1
+
