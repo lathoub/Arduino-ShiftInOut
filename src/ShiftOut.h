@@ -8,10 +8,10 @@ class ShiftOut {
     {
     }
 
-    void write(uint8_t* buffer, uint8_t size) {
+    void write(uint8_t* buffer, uint8_t chipCount = totalChipCount) {
       _device.beginWrite();
 
-      for (auto i = 0; i < size; i++)
+      for (int i = chipCount - 1; i >= 0; i--) 
         _device.write(buffer[i]);
 
       _device.endWrite();
