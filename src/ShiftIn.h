@@ -1,19 +1,28 @@
 #pragma once
 
-// parallel-in/serial out
+template <class Device, uint8_t totalChipCount>
+class ShiftIn {
+  private:
+    uint8_t _buffer[totalChipCount];
 
-template <class Hardware>
-class pisoInterface {
   public:
-    pisoInterface(Hardware& hardware)
-        : _hardware(hardware) 
+    ShiftIn(Device& device)
+      :   _device(device)
     {
     }
 
-    uint8_t* read(uint8_t amount) {
-      return _hardware.read(amount);
+    uint8_t* read(uint8_t chipCount) {
+
+      _device.beginRead();
+
+      for (auto i = 0; i < chipCount; i++)
+        _buffer[i] = _device.read();
+
+      _device.endRead();
+
+      return _buffer;
     }
 
   private:
-    Hardware& _hardware;
+    Device& _device;
 };

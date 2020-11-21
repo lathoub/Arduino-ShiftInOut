@@ -1,37 +1,39 @@
 #pragma once
 
-// 8-Bit Serial-In, Parallel-Out Shift
-
 /*
 */
 
-template<class DigitalPin, uint8_t size>
+template<class PinLoad, class PinData, class PinClock>
 class IC74HC595 {
 private:
-  DigitalPin _clock; // CP
-  DigitalPin _latch; // PE
-  DigitalPin _data;  // DS
-    
-  void shiftOut()
-  {
-  }
+  PinLoad&  PL;
+  PinData&  DS;
+  PinClock& CP; 
 
   public:
   // Constructor
-  IC74HC595(uint8_t pinClock, uint8_t pinLatch, uint8_t pinData)
+  IC74HC595(PinLoad& load, PinData& data, PinClock& clock)
+     :   PL(load), DS(data), CP(clock)
   {
-    _clock.pin(pinClock, OUTPUT);
-    _latch.pin(pinLatch, OUTPUT);
-    _data.pin (pinData,  OUTPUT);
-
-    _clock.write(LOW);
-    _latch.write(LOW);
-    _data.write(LOW);
   }
 
-  // read from <amount> IC's
-  void write(uint8_t amount)
+  void beginWrite()
   {
+    PL.write(LOW);
+  }
+
+  void write(uint8_t value)
+  {
+    for (auto i = 0; i < 8; i++) {
+      CP.write(LOW);
+      DS.write(value);
+      CP.write(HIGH);
+    }
+  }
+
+  void endWrite()
+  {
+    PL.write(HIGH);
   }
 
 };

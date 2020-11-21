@@ -1,19 +1,22 @@
 #pragma once
 
-// 1• 8-Bit Serial-In, Parallel-Out Shift
-
-template <class Hardware>
-class sipoInterface {
+template <class Device, uint8_t totalChipCount>
+class ShiftOut {
   public:
-    sipoInterface(Hardware& hardware)
-        : _hardware(hardware) 
+    ShiftOut(Device& device)
+        : _device(device) 
     {
     }
 
-    uint8_t* write(uint8_t amount) {
-      return _hardware.write(amount);
+    void write(uint8_t* buffer, uint8_t size) {
+      _device.beginWrite();
+
+      for (auto i = 0; i < size; i++)
+        _device.write(buffer[i]);
+
+      _device.endWrite();
     }
 
   private:
-    Hardware& _hardware;
+    Device& _device;
 };
