@@ -1,8 +1,8 @@
 #include <ShiftInOut.h>
-#include <BitComparator.h>
+#include <ButtonManager.h>
 
 CREATE_NATIVE_74HC165(knoppen, A12, A14, A13, 2);
-BitComparator<uint8_t, 2> comparator;
+ButtonManager<uint8_t, 2> comparator;
 
 long lastMillis = 0;
 long loops = 0;

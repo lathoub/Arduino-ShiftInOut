@@ -20,3 +20,12 @@ class ShiftOut {
   private:
     Device& _device;
 };
+
+#include <hardware/IC74HC595.h>
+
+#define CREATE_NATIVE_74HC595(Name, LatchPin, DataPin, ClockPin, MaxChipCount) \
+  NativeDigitalIO<LatchPin, OUTPUT> latch##Name; \
+  NativeDigitalIO<DataPin, OUTPUT> data##Name; \
+  NativeDigitalIO<ClockPin, OUTPUT> clock##Name; \
+  IC74HC595<NativeDigitalIO<LatchPin, OUTPUT>, NativeDigitalIO<DataPin, OUTPUT>, NativeDigitalIO<ClockPin, OUTPUT>> chip##Name(latch##Name, data##Name, clock##Name); \
+  ShiftOut<IC74HC595<NativeDigitalIO<LatchPin, OUTPUT>, NativeDigitalIO<DataPin, OUTPUT>, NativeDigitalIO<ClockPin, OUTPUT>>, MaxChipCount> Name(chip##Name);

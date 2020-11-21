@@ -11,7 +11,7 @@ class ShiftIn {
     {
     }
 
-    uint8_t* read(uint8_t chipCount) {
+    uint8_t* read(uint8_t chipCount = totalChipCount) {
 
       _device.beginRead();
 
@@ -26,3 +26,12 @@ class ShiftIn {
   private:
     Device& _device;
 };
+
+#include <hardware/IC74HC165.h>
+
+#define CREATE_NATIVE_74HC165(Name, LatchPin, DataPin, ClockPin, MaxChipCount) \
+  NativeDigitalIO<LatchPin, OUTPUT> latch##Name; \
+  NativeDigitalIO<DataPin, INPUT> data##Name; \
+  NativeDigitalIO<ClockPin, OUTPUT> clock##Name; \
+  IC74HC165<NativeDigitalIO<LatchPin, OUTPUT>, NativeDigitalIO<DataPin, INPUT>, NativeDigitalIO<ClockPin, OUTPUT>> chip##Name(latch##Name, data##Name, clock##Name); \
+  ShiftIn<IC74HC165<NativeDigitalIO<LatchPin, OUTPUT>, NativeDigitalIO<DataPin, INPUT>, NativeDigitalIO<ClockPin, OUTPUT>>, MaxChipCount> Name(chip##Name);
