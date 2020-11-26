@@ -9,12 +9,13 @@ public:
     ::pinMode(pin, mode);
   }
 
-  uint8_t read() {
-    return ::digitalRead(pin); 
+  uint8_t read()
+  {
+    return ::digitalRead(pin);
   };
 
-  void write(uint8_t value) {
-    ::digitalWrite(pin, value); 
+  void write(uint8_t value)
+  {
+    ::digitalWrite(pin, value);
   };
-
 };

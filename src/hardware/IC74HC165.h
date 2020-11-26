@@ -13,40 +13,42 @@ to be used in HIGH-to-LOW level shifting applications.
 
 // The chip enable (/CE) pin is connected to ground as the chip may as well always be enabled
 
-template<class PinLoad, class PinData, class PinClock>
-class IC74HC165 {
+template <class PinLoad, class PinData, class PinClock>
+class IC74HC165
+{
 private:
- // PinClockEnable& CE;
-  PinLoad&  PL;
-  PinData&  DS;
-  PinClock& CP; // SCK
-    
+  // PinClockEnable& CE;
+  PinLoad &PL;
+  PinData &DS;
+  PinClock &CP; // SCK
+
   uint8_t _pulseWidth; // in microseconds, default is 5
 
 public:
   // Constructor
-  IC74HC165(PinLoad& load, PinData& data, PinClock& clock)
-    :   PL(load), DS(data), CP(clock),
+  IC74HC165(PinLoad &load, PinData &data, PinClock &clock)
+      : PL(load), DS(data), CP(clock),
         _pulseWidth(5)
   {
   }
 
   void beginRead()
   {
- //   CE.write(HIGH);
+    //   CE.write(HIGH);
     PL.write(LOW);
     delayMicroseconds(_pulseWidth);
     PL.write(HIGH);
-//    CE.write(LOW);
+    //    CE.write(LOW);
   }
 
   uint8_t read()
   {
-		uint8_t result = 0;
+    uint8_t result = 0;
 
-    for (auto i = 0; i < 8; i++) { 
+    for (auto i = 0; i < 8; i++)
+    {
       auto value = DS.read();
-      result |= (value << ((8-1) - i));
+      result |= (value << ((8 - 1) - i));
 
       CP.write(HIGH);
       delayMicroseconds(_pulseWidth);
@@ -59,5 +61,4 @@ public:
   void endRead()
   {
   }
-
 };
