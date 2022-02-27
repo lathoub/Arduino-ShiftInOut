@@ -1,11 +1,12 @@
-#include <ShiftInOut.h>
-#include <LightManager.h>
+#include <ShiftOut.h>
+#include <hardware/IC74HC595.h>
 
-CREATE_NATIVE_74HC595(lichten, A11, A15, A13, 2);
-LightManager<uint8_t, 2> lights;
+#define LATCHPIN A11
+#define DATAPIN A15
+#define CLOCKPIN A13
+#define CHIPCOUNT 4
 
-uint8_t aan[] = {0xFF, 0xFF};
-uint8_t uit[] = {0x00, 0x00};
+CREATE_NATIVE_74HC595(so, LATCHPIN, DATAPIN, CLOCKPIN, CHIPCOUNT);
 
 void setup() {
   Serial.begin(115200);
@@ -15,10 +16,8 @@ void setup() {
 
 void loop() {
   delay(500);
-  lights.set(1, false);
-  lichten.write(lights.buffer(), 2);
+  so.setAll(true).commit();
 
   delay(500);
-  lights.set(1, true);
-  lichten.write(lights.buffer(), 2);
+  so.setAll(false).commit();
 }

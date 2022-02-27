@@ -1,5 +1,7 @@
 #pragma once
 
+// wrapper around system digital access pins
+
 template <uint8_t pin, uint8_t mode>
 class NativeDigitalIO
 {

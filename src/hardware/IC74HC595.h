@@ -11,6 +11,8 @@ private:
   PinData &DS;
   PinClock &CP;
 
+  #define BITSPERBYTE 8
+
 public:
   // Constructor
   IC74HC595(PinLoad &load, PinData &data, PinClock &clock)
@@ -23,28 +25,16 @@ public:
     PL.write(LOW);
   }
 
-  void write(uint8_t value)
+  void write(const uint8_t value)
   {
-    int pinState;
+    uint8_t pinState;
 
-    for (auto i = 0; i < 8; i++)
+    for (uint8_t i = 0; i < BITSPERBYTE; i++)
     {
       CP.write(LOW);
 
-      //if the value passed to myDataOut and a bitmask result
-      // true then... so if we are at i=6 and our value is
-      // %11010100 it would the code compares it to %01000000
-      // and proceeds to set pinState to 1.
-      if (value & (1 << i))
-      {
-        pinState = 1;
-      }
-      else
-      {
-        pinState = 0;
-      }
+      pinState = (value & (1 << i));
 
-      //Sets the pin to HIGH or LOW depending on pinState
       DS.write(pinState);
       //register shifts bits on upstroke of clock pin
       CP.write(HIGH);
@@ -52,7 +42,6 @@ public:
       DS.write(LOW);
     }
 
-    //stop shifting
     CP.write(LOW);
   }
 
@@ -61,3 +50,15 @@ public:
     PL.write(HIGH);
   }
 };
+
+#define CREATE_74HC595(Name, DigitalIO, LatchPin, DataPin, ClockPin, MaxChipCount)   \
+  NativeDigitalIO<LatchPin, OUTPUT> latch##Name;                                     \
+  NativeDigitalIO<DataPin, OUTPUT> data##Name;                                       \
+  NativeDigitalIO<ClockPin, OUTPUT> clock##Name;                                     \
+  IC74HC595<NativeDigitalIO<LatchPin, OUTPUT>, NativeDigitalIO<DataPin, OUTPUT>, NativeDigitalIO<ClockPin, OUTPUT>> chip##Name(latch##Name, data##Name, clock##Name); \
+  ShiftOut<IC74HC595<NativeDigitalIO<LatchPin, OUTPUT>, NativeDigitalIO<DataPin, OUTPUT>, NativeDigitalIO<ClockPin, OUTPUT>>, MaxChipCount> Name(chip##Name);
+
+#include <NativeDigitalIO.h>
+
+#define CREATE_NATIVE_74HC595(Name, LatchPin, DataPin, ClockPin, MaxChipCount) \
+  CREATE_74HC595(Name, NativeDigitalIO, LatchPin, DataPin, ClockPin, MaxChipCount);

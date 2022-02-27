@@ -1,8 +1,12 @@
-#include <ShiftInOut.h>
-#include <ButtonManager.h>
+#include <ShiftIn.h>
+#include <hardware/IC74HC165.h>
 
-CREATE_NATIVE_74HC165(knoppen, A12, A14, A13, 2);
-ButtonManager<uint8_t, 2> comparator;
+#define LATCHPIN A12
+#define DATAPIN A14
+#define CLOCKPIN A13
+#define CHIPCOUNT 4
+
+CREATE_NATIVE_74HC165(si, LATCHPIN, DATAPIN, CLOCKPIN, CHIPCOUNT);
 
 long lastMillis = 0;
 long loops = 0;
@@ -11,25 +15,18 @@ void setup() {
   Serial.begin(115200);
   while (!Serial);
   Serial.println("Booting");
-
-  comparator.init(0xFF);
 }
 
 void loop() {
-
   long currentMillis = millis();
   loops++;
 
-  if (comparator.hasChanged(knoppen.read(2)))
-  {
-    auto bs = comparator.buttonsState(0);
-    for (int i = 0; i < bs->count; i++)
-      Serial.println(bs->buttonsState[i]);
-
-    bs = comparator.buttonsState(1);
-    for (int i = 0; i < bs->count; i++)
-      Serial.println(bs->buttonsState[i]);
+  auto result = si.read();
+  for (uint8_t i = 0; i < CHIPCOUNT; i++) {
+    Serial.print(result[i], BIN);
+    Serial.print(" ");
   }
+  Serial.println();
 
   if (currentMillis - lastMillis > 1000) {
     Serial.print("Loops last second:");

@@ -22,13 +22,14 @@ private:
   PinData &DS;
   PinClock &CP; // SCK
 
-  uint8_t _pulseWidth; // in microseconds, default is 5
+  const uint8_t _pulseWidth = 5; // in microseconds, datasheet indicates is 5 microseconds
+  
+  #define BITSPERBYTE 8
 
 public:
   // Constructor
   IC74HC165(PinLoad &load, PinData &data, PinClock &clock)
-      : PL(load), DS(data), CP(clock),
-        _pulseWidth(5)
+      : PL(load), DS(data), CP(clock)
   {
   }
 
@@ -45,10 +46,10 @@ public:
   {
     uint8_t result = 0;
 
-    for (auto i = 0; i < 8; i++)
+    for (uint8_t i = 0; i < BITSPERBYTE; i++)
     {
       auto value = DS.read();
-      result |= (value << ((8 - 1) - i));
+      result |= (value << ((BITSPERBYTE - 1) - i));
 
       CP.write(HIGH);
       delayMicroseconds(_pulseWidth);
@@ -62,3 +63,15 @@ public:
   {
   }
 };
+
+#define CREATE_74HC165(Name, DigitalIO, LatchPin, DataPin, ClockPin, MaxChipCount)   \
+  DigitalIO<LatchPin, OUTPUT> latch##Name;                                           \
+  DigitalIO<DataPin, INPUT> data##Name;                                              \
+  DigitalIO<ClockPin, OUTPUT> clock##Name;                                           \
+  IC74HC165<DigitalIO<LatchPin, OUTPUT>, DigitalIO<DataPin, INPUT>, DigitalIO<ClockPin, OUTPUT>> chip##Name(latch##Name, data##Name, clock##Name); \
+  ShiftIn<IC74HC165<DigitalIO<LatchPin, OUTPUT>, DigitalIO<DataPin, INPUT>, DigitalIO<ClockPin, OUTPUT>>, MaxChipCount> Name(chip##Name);
+
+#include <NativeDigitalIO.h>
+
+#define CREATE_NATIVE_74HC165(Name, LatchPin, DataPin, ClockPin, MaxChipCount) \
+  CREATE_74HC165(Name, NativeDigitalIO, LatchPin, DataPin, ClockPin, MaxChipCount);
