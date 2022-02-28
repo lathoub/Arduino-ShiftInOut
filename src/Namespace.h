@@ -1,0 +1,11 @@
+#pragma once
+
+#define SHIFTINOUT_NAMESPACE                  shiftInOut
+#define BEGIN_SHIFTINOUT_NAMESPACE            namespace SHIFTINOUT_NAMESPACE {
+#define END_SHIFTINOUT_NAMESPACE              }
+
+#define USING_NAMESPACE_SHIFTINOUT            using namespace SHIFTINOUT_NAMESPACE;
+
+BEGIN_SHIFTINOUT_NAMESPACE
+
+END_SHIFTINOUT_NAMESPACE
