@@ -20,20 +20,20 @@ public:
 
     _device.beginWrite();
 
-    for (uint8_t i = chipCount - 1; i >= 0; i--)
+    for (auto i = chipCount - 1; i >= 0; i--)
       _device.write(buffer[i]);
 
     _device.endWrite();
   }
 
-  ShiftOut& setAll(bool onOff)
+  ShiftOut &setAll(bool onOff)
   {
-    for (uint8_t i = totalICcount - 1; i >= 0; i--)
+    for (auto i = totalICcount - 1; i >= 0; i--)
       _buffer[i] = (onOff) ? 0xFF : 0x00;
     return static_cast<ShiftOut &>(*this);
   }
 
-  ShiftOut& set(uint8_t bit, bool onOff)
+  ShiftOut &set(uint8_t bit, bool onOff)
   {
     bitWrite(_buffer[bit / 8], bit - (8 * (bit / 8)), onOff);
     return static_cast<ShiftOut &>(*this);
