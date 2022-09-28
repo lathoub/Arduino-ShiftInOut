@@ -20,13 +20,13 @@ public:
 
     // read from all IC's
     _device.beginRead();
-    for (uint8_t i = 0; i < chipCount; i++)
+    for (auto i = 0; i < chipCount; i++)
       _buffer[i] = _device.read();
     _device.endRead();
 
-      // tmp
-      for (uint8_t i = 0; i < chipCount; i++)
-        _buffer[i] = ~_buffer[i];
+    // tmp
+    for (auto i = 0; i < chipCount; i++)
+      _buffer[i] = ~_buffer[i];
 
     return _buffer;
   }
