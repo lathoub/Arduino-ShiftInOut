@@ -14,21 +14,21 @@ public:
 
   void write(uint8_t *buffer, uint8_t chipCount = totalICcount)
   {
-    // keep within bounds
     if (chipCount > totalICcount)
       chipCount = totalICcount;
 
     _device.beginWrite();
 
-    for (uint8_t i = chipCount - 1; i >= 0; i--)
+    for (auto i = chipCount - 1; i >= 0; i--) {
       _device.write(buffer[i]);
+    }
 
     _device.endWrite();
   }
 
   ShiftOut& setAll(bool onOff)
   {
-    for (uint8_t i = totalICcount - 1; i >= 0; i--)
+    for (auto i = totalICcount - 1; i >= 0; i--)
       _buffer[i] = (onOff) ? 0xFF : 0x00;
     return static_cast<ShiftOut &>(*this);
   }
