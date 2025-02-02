@@ -10,6 +10,9 @@ public:
   ShiftOut(Device &device)
       : _device(device)
   {
+    // turn off by default
+    for (auto i = totalICcount - 1; i >= 0; i--)
+      _buffer[i] = 0xFF;
   }
 
   void write(uint8_t *buffer, uint8_t chipCount = totalICcount)
